@@ -7,7 +7,7 @@ public class TCPServer {
 	final static int BUFFER_SIZE = 4096;
 
 	public static void main(String[] args) {
-		try(ServerSocket serverSocket = new ServerSocket(Constants.Ports.SERVER_PORT)) {
+		try (ServerSocket serverSocket = new ServerSocket(Constants.Ports.SERVER_PORT)) {
 			System.out.println("[Server] TCP Server started on port " + Constants.Ports.SERVER_PORT + "...");
 
 			while (true) {

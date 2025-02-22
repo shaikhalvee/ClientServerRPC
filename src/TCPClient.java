@@ -41,7 +41,8 @@ public class TCPClient {
 				totalRead += bytesRead;
 			}
 			fos.close();
-			System.out.println("File received and saved as: " + outputFile.getName() + " in path" + outputFile.getAbsolutePath());
+			System.out.println("[Client] File received and saved as: " + outputFile.getName()
+					+ " in path: " + outputFile.getCanonicalPath());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
