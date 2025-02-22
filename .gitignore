@@ -30,3 +30,4 @@ bin/
 
 ### Intellj IDEA ###
 .idea/
+*.iml
