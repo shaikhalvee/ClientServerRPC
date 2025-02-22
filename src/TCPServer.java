@@ -13,8 +13,7 @@ public class TCPServer {
 			while (true) {
 				// Accept one client (single-threaded)
 				Socket clientSocket = serverSocket.accept();
-				System.out.println("[Server] Accepted a client: " + clientSocket.getRemoteSocketAddress() +
-						"with inet address: " + clientSocket.getInetAddress());
+				System.out.println("[Server] Accepted a client: " + clientSocket.getRemoteSocketAddress() + "with inet address: " + clientSocket.getInetAddress());
 
 				// Create input/output streams
 				BufferedReader inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -79,11 +78,11 @@ public class TCPServer {
 		// E.g., "picture.jpg" -> "picture_59128.jpg"
 		int dotIndex = requestedFile.lastIndexOf('.');
 		if (dotIndex == -1) {
-			return requestedFile + "_" + port;
+			return requestedFile + "_" + Constants.Modules.TCP + "_" + port;
 		} else {
 			String name = requestedFile.substring(0, dotIndex);
 			String ext = requestedFile.substring(dotIndex);
-			return name + "_" + port + ext;
+			return name + "_" + Constants.Modules.TCP + "_" + port + ext;
 		}
 	}
 }

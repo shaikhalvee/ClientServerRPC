@@ -24,4 +24,8 @@ public interface Constants {
 		String SERVER_IMAGE_FOLDER = "./image/server";
 		String CLIENT_IMAGE_FOLDER = "./image/client";
 	}
+
+	interface Config {
+		int BUFFER_SIZE = 4096;
+	}
 }
