@@ -29,5 +29,6 @@ public interface Constants {
 
 	interface Config {
 		int BUFFER_SIZE = 4096;
+		int RPC_ID = 1583;
 	}
 }

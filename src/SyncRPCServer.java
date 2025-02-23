@@ -5,15 +5,17 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SyncRPCServer {
 
 	private static final int PORT = Constants.Ports.RPC_PORT;
+	private static final AtomicBoolean running = new AtomicBoolean(true);
 
 	public static void main(String[] args) {
 		System.out.println("[Server] Starting RPCServer on port " + PORT);
 		try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-			while (true) {
+			while (running.get()) {
 				// Accept a new client
 				Socket clientSocket = serverSocket.accept();
 				System.out.println("[Server] Accepted connection from " + clientSocket.getInetAddress()
