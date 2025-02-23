@@ -19,6 +19,7 @@ public interface Constants {
 	interface Ports {
 		int LOCAL_PORT = 8080;
 		int SERVER_PORT = 8088;
+		int RPC_PORT = 8989;
 	}
 
 	interface FilePath {
