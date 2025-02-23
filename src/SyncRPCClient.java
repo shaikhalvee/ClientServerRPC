@@ -15,7 +15,7 @@ public class SyncRPCClient {
 	}
 
 	// Simulate a synchronous remote call to foo(iterations)
-	public void foo(int iterations) throws IOException {
+	public void handleFoo(int iterations) throws IOException {
 		String request = "REQUEST: foo " + iterations;
 		String response = sendRequest(request);
 		// For foo, we expect "RESPONSE: OK"
@@ -23,7 +23,7 @@ public class SyncRPCClient {
 	}
 
 	// Synchronous remote call to add(i, j) => returns sum
-	public int add(int i, int j) throws IOException {
+	public int handleAdd(int i, int j) throws IOException {
 		String request = "REQUEST: add " + i + " " + j;
 		String response = sendRequest(request);
 		System.out.println("[Client] add(" + i + ", " + j + ") => " + response);
@@ -32,7 +32,7 @@ public class SyncRPCClient {
 	}
 
 	// Synchronous remote call to sort(array) => returns sorted array
-	public int[] sort(int[] array) throws IOException {
+	public int[] handleSort(int[] array) throws IOException {
 		StringBuilder sb = new StringBuilder("REQUEST: sort");
 		for (int val : array) {
 			sb.append(" ").append(val);
@@ -86,12 +86,12 @@ public class SyncRPCClient {
 		SyncRPCClient client = new SyncRPCClient(serverHost, serverPort);
 		try {
 			// Example calls
-			client.foo(1000000000);  // Just prints "OK"
-			int sum = client.add(3, 5);    // Should print 8
+			client.handleFoo(1000000000);  // Just prints "OK"
+			int sum = client.handleAdd(3332, 53434);    // Should print 8
 			System.out.println("[Client Main] Sum from server: " + sum);
 
 			int[] arr = {5, 9, 1, 3, 2};
-			int[] sorted = client.sort(arr);
+			int[] sorted = client.handleSort(arr);
 			System.out.println("[Client Main] Sorted array from server: " + Arrays.toString(sorted));
 		} catch (IOException e) {
 			e.printStackTrace();
