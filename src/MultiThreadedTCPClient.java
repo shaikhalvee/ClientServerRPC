@@ -49,7 +49,6 @@ public class MultiThreadedTCPClient {
 			fos.flush();
 			System.out.println("[Client] Downloaded " + fileName + " as " + renamedFile +
 					" in thread: " + Thread.currentThread().getName());
-			socketInputFromServer.close();
 			outWriter.flush();
 		} catch (IOException e) {
 			e.printStackTrace();

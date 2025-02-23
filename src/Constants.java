@@ -7,6 +7,7 @@ public interface Constants {
 		String TCP = "tcp";
 		String UDP = "udp";
 		String MTCP = "mtcp";
+		String MUDP = "mudp";
 		String SRPC = "srpc";
 		String ARPC = "arpc";
 	}
