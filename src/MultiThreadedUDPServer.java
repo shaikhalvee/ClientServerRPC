@@ -6,7 +6,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-public class MultiThreadPoolUDPServer {
+public class MultiThreadedUDPServer {
 
 	public static final int SERVER_PORT = Constants.Ports.SERVER_PORT;
 	public static final int BUFFER_SIZE = Constants.Config.BUFFER_SIZE;
