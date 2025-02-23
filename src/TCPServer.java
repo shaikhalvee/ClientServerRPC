@@ -75,7 +75,6 @@ public class TCPServer {
 	}
 
 	private static String appendInfoToFileName(String requestedFile, int port) {
-		// E.g., "picture.jpg" -> "picture_59128.jpg"
 		int dotIndex = requestedFile.lastIndexOf('.');
 		if (dotIndex == -1) {
 			return requestedFile + "_" + Constants.Modules.TCP + "_" + port;

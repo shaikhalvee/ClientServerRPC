@@ -16,7 +16,7 @@ public class TCPClient {
 			// Expect "FILENAME:<renamed>" or "ERROR:..."
 			String line = inputFromServer.readLine();
 			if (line.startsWith("ERROR")) {
-				System.out.println(line);
+				System.out.println("[Client] " + line);
 				return;
 			}
 
@@ -33,7 +33,7 @@ public class TCPClient {
 			File outputFile = new File(Constants.FilePath.CLIENT_IMAGE_FOLDER, renamed);
 			FileOutputStream fos = new FileOutputStream(outputFile);
 			InputStream socketInputFromServer = socket.getInputStream();
-			byte[] buffer = new byte[4096];
+			byte[] buffer = new byte[Constants.Config.BUFFER_SIZE];
 			int totalRead = 0;
 			int bytesRead;
 			while (totalRead < fileSize && (bytesRead = socketInputFromServer.read(buffer)) != -1) {
