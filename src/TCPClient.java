@@ -16,7 +16,7 @@ public class TCPClient {
 			// Expect "FILENAME:<renamed>" or "ERROR:..."
 			String line = inputFromServer.readLine();
 			if (line.startsWith("ERROR")) {
-				System.out.println("[Client] " + line);
+				System.err.println("[Client] " + line);
 				return;
 			}
 

@@ -31,6 +31,7 @@ public class TCPServer {
 				File file = new File(Constants.FilePath.SERVER_IMAGE_FOLDER, clientInput);
 				if (!file.exists()) {
 					// Simple error handling: notify client
+					System.err.println("[Server] File does not exist: " + file.getCanonicalPath());
 					outputWriter.println("ERROR: File not found");
 					clientSocket.close();
 					continue;
