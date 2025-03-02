@@ -1,5 +1,8 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MultiThreadedTCPClient {
 
@@ -10,14 +13,46 @@ public class MultiThreadedTCPClient {
 	final static int PORT = Constants.Ports.SERVER_PORT;
 	final static int BUFFER_SIZE = Constants.Config.BUFFER_SIZE;
 
+	private static final List<Long> responseTimes = Collections.synchronizedList(new ArrayList<>());
+
 	public static void main(String[] args) {
-		for (String fileName : fileList) {
-			// Each request in a separate thread
-			new Thread(() -> fetchFile(fileName)).start();
+		int totalLoop = 1;
+		if (args.length != 0) {
+			totalLoop = Integer.parseInt(args[0]);
+		}
+		// run for totalLoop times
+		List<Thread> threads = new ArrayList<>();
+		for (int i = 0; i < totalLoop; i++) {
+			for (String fileName : fileList) {
+				// Each request in a separate thread
+				Thread thread = new Thread(() -> fetchFile(fileName));
+				thread.start();
+				threads.add(thread);
+			}
+			try {
+				for (Thread thread : threads) {
+					thread.join();
+//					System.out.println("[Client] " + thread.getName() + " finished");
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (!responseTimes.isEmpty()) {
+			long sum = 0;
+			for (long responseTime : responseTimes) {
+				sum += responseTime;
+			}
+			double avgNano = sum / (double) responseTimes.size();
+			double avgMilli = avgNano / 1000000.0;  // convert ns -> ms
+
+			System.out.println("[Client] Average response time: " + avgMilli + " ms for " + totalLoop + " loops" );
 		}
 	}
 
 	private static void fetchFile(String fileName) {
+		long startTime = System.nanoTime();
 		try (Socket socket = new Socket(SERVER_IP, PORT)) {
 			PrintWriter outWriter = new PrintWriter(socket.getOutputStream(), true);
 			outWriter.println(fileName);  // request
@@ -53,5 +88,9 @@ public class MultiThreadedTCPClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		long endTime = System.nanoTime();
+		long elapsedTimeInNano = endTime - startTime;
+		responseTimes.add(elapsedTimeInNano);
+		System.out.println("[Client] Elapsed time: " + elapsedTimeInNano + " ns");
 	}
 }
