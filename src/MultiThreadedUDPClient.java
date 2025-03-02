@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MultiThreadedUDPClient {
 
@@ -13,14 +16,40 @@ public class MultiThreadedUDPClient {
 	private static final String IMAGE_FOLDER = Constants.FilePath.CLIENT_IMAGE_FOLDER;
 	private static final String[] fileList = {"my_image.jpg", "my_image2.jpg", "my_image3.jpg", "my_image4.jpg",
 			"my_image5.jpg"};
+	private static final List<Long> downloadTimesMs = Collections.synchronizedList(new ArrayList<>());
 
-	public static void main(String[] args) {
-		for (String fileName : fileList) {
-			new Thread(() -> downloadFile(fileName)).start();
+	public static void main(String[] args) throws InterruptedException  {
+		int totalLoop = 1;
+		if (args.length != 0) {
+			totalLoop = Integer.parseInt(args[0]);
+		}
+		List<Thread> threads = new ArrayList<>();
+		for (int i = 0; i < totalLoop; i++) {
+			for (String fileName : fileList) {
+				Thread thread = new Thread(() -> downloadFile(fileName));
+				thread.start();
+				threads.add(thread);
+			}
+			// Wait for all threads to finish
+			for (Thread t : threads) {
+				t.join();
+				System.out.println("[UDP Client] " + t.getName() + " finished");
+			}
+		}
+		// Compute and display average time
+		if (!downloadTimesMs.isEmpty()) {
+			long sum = 0;
+			for (long time : downloadTimesMs) {
+				sum += time;
+			}
+			double avg = sum / (double) downloadTimesMs.size();
+			System.out.println("[UDP Client] Average download time across "
+					+ downloadTimesMs.size() + " files: " + avg + " ms");
 		}
 	}
 
 	private static void downloadFile(String fileName) {
+		long startTime = System.currentTimeMillis();
 		try (DatagramSocket socket = new DatagramSocket()) {
 			InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
 
@@ -76,5 +105,9 @@ public class MultiThreadedUDPClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		long endTime = System.currentTimeMillis();
+		long elapsedTimeInMillis = endTime - startTime;
+		downloadTimesMs.add(elapsedTimeInMillis);
+		System.out.println("[UDP Client] " + fileName + " download time = " + elapsedTimeInMillis + " ms");
 	}
 }
