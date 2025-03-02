@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
 
 /**
  * AsyncRPCClient - Asynchronous RPC client
@@ -118,9 +119,9 @@ public class AsyncRPCClient {
 			System.out.println("[Client] asyncAdd(3343,53323) => rpcId=" + addId);
 
 			// Example: asynchronous sort
-			int[] arr = {5, 9, 1, 3, 2};
+			int[] arr = {5, 9, 1, 3, 2, 45, 23, 22, 221, 43, 656, 88787, 977, 5, 3, 78, 99};
 			int sortId = client.handleAsyncSort(arr);
-			System.out.println("[Client] asyncSort([5,9,1,3,2]) => rpcId=" + sortId);
+			System.out.println("[Client] asyncSort(" + Arrays.toString(arr) +") => rpcId=" + sortId);
 
 			// Meanwhile, do other work, then poll for results:
 			for (int i = 0; i < 10; i++) {

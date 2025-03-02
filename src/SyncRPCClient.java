@@ -86,8 +86,8 @@ public class SyncRPCClient {
 		SyncRPCClient client = new SyncRPCClient(serverHost, serverPort);
 		try {
 			// Example calls
-			client.handleFoo(1000000000);  // Just prints "OK"
-			int sum = client.handleAdd(3332, 53434);    // Should print 8
+			client.handleFoo(1000000000);
+			int sum = client.handleAdd(3332, 53434);
 			System.out.println("[Client Main] Sum from server: " + sum);
 
 			int[] arr = {5, 9, 1, 3, 2};
