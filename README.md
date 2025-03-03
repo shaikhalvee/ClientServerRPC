@@ -36,6 +36,17 @@ java files into class file.
 5. Run required files by `java -cp out/production/ClientServerRPC <Classname>`.
 For example, if you want to run the `TCPServer`, the run `java -cp out/production/ClientServerRPC TCPServer`
 Similarly for client, open a new terminal window, and run `java -cp out/production/ClientServerRPC TCPClient`
+6. For Multithreaded, Sync RPC and Async RPC, please do the following
+   1. For multithreaded
+      1. Run the server: `java -cp out/production/ClientServerRPC MultiThreadedTCPServer`
+      2. Run the client: `java -cp out/production/ClientServerRPC MultiThreadedTCPClient 25`, here `25` is the number of loop, where we have 5 files. So total thread would be `5*25=125 threads`
+   2. For Sync RPC:
+      1. Run the server: `java -cp out/production/ClientServerRPC SyncRPCServer`
+      2. Run the client: `java -cp out/production/ClientServerRPC SyncRPCClient 6 999900000`, here `6` is the number of loop, and `999900000` is the number of value/iterations for foo.
+   3. 1. Run the server: `java -cp out/production/ClientServerRPC AsyncRPCServer`
+      2. Run the client: `java -cp out/production/ClientServerRPC AsyncRPCClient 6 999900000`, here `6` is the number of loop, and `999900000` is the number of value/iterations for foo.
+
+
 
 
 
