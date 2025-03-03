@@ -45,10 +45,3 @@ Similarly for client, open a new terminal window, and run `java -cp out/producti
       2. Run the client: `java -cp out/production/ClientServerRPC SyncRPCClient 6 999900000`, here `6` is the number of loop, and `999900000` is the number of value/iterations for foo.
    3. 1. Run the server: `java -cp out/production/ClientServerRPC AsyncRPCServer`
       2. Run the client: `java -cp out/production/ClientServerRPC AsyncRPCClient 6 999900000`, here `6` is the number of loop, and `999900000` is the number of value/iterations for foo.
-
-
-
-
-
-
-
