@@ -3,7 +3,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * AsyncRPCClient - Asynchronous RPC client
@@ -95,54 +97,53 @@ public class AsyncRPCClient {
 	}
 
 	// Quick test
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		String host = Constants.IP.CLIENT_IP;
 		int port = Constants.Ports.RPC_PORT;
-//		// Usage: java AsyncRPCClient <server_ip> <port>
-//		if (args.length < 2) {
-//			System.out.println("Usage: java AsyncRPCClient <server_ip> <port>");
-//			return;
-//		}
-//		String host = args[0];
-//		int port = Integer.parseInt(args[1]);
-
-
 
 		AsyncRPCClient client = new AsyncRPCClient(host, port);
-		try {
-			// Example: asynchronous foo
-			int fooId = client.handleAsyncFoo(999990000);
-			System.out.println("[Client] asyncFoo(1000000) => rpcId=" + fooId);
 
-			// Example: asynchronous add
-			int addId = client.handleAsyncAdd(3343, 53323);
-			System.out.println("[Client] asyncAdd(3343,53323) => rpcId=" + addId);
+		int numberOfCalls = 5;
+		int iterations = 500_000_000;
+		List<Integer> rpcIds = new ArrayList<>();
 
-			// Example: asynchronous sort
-			int[] arr = {5, 9, 1, 3, 2, 45, 23, 22, 221, 43, 656, 88787, 977, 5, 3, 78, 99};
-			int sortId = client.handleAsyncSort(arr);
-			System.out.println("[Client] asyncSort(" + Arrays.toString(arr) +") => rpcId=" + sortId);
+		// 1) Send all requests up front
+		long sendStart = System.currentTimeMillis();
+		for (int i = 0; i < numberOfCalls; i++) {
+			int rpcId = client.handleAsyncFoo(iterations);
+			rpcIds.add(rpcId);
+		}
+		long sendEnd = System.currentTimeMillis();
+		System.out.println("[AsyncClientPerf] Sent " + numberOfCalls + " asyncFoo() requests in "
+				+ (sendEnd - sendStart) + " ms");
 
-			// Meanwhile, do other work, then poll for results:
-			for (int i = 0; i < 10; i++) {
-				Thread.sleep(500);
-				String fooResult = client.getResult(fooId);
-				System.out.println("[Client] getResult(fooId) => " + fooResult);
-				if (!"NOT_READY".equals(fooResult)) {
-					break;
+		// 2) Poll for results
+		long pollStart = System.currentTimeMillis();
+		boolean[] done = new boolean[numberOfCalls];
+		int remaining = numberOfCalls;
+
+		while (remaining > 0) {
+			for (int i = 0; i < numberOfCalls; i++) {
+				if (!done[i]) {
+					String res = client.getResult(rpcIds.get(i));
+					if (!"NOT_READY".equals(res)) {
+						// It's done
+						done[i] = true;
+						remaining--;
+						System.out.println("[AsyncClientPerf] RPC " + rpcIds.get(i) + " completed with: " + res);
+					}
 				}
 			}
-
-			// Check add result
-			String addResult = client.getResult(addId);
-			System.out.println("[Client] getResult(addId) => " + addResult);
-
-			// Check sort result
-			String sortResult = client.getResult(sortId);
-			System.out.println("[Client] getResult(sortId) => " + sortResult);
-
-		} catch (Exception e) {
-			e.printStackTrace();
+			if (remaining > 0) {
+				Thread.sleep(200); // wait a bit before polling again
+			}
 		}
+
+		long pollEnd = System.currentTimeMillis();
+		long totalTime = pollEnd - pollStart; // from first send to last result
+
+		System.out.println("[AsyncClientPerf] All " + numberOfCalls + " calls finished. Total time = "
+				+ totalTime + " ms");
 	}
 }
+

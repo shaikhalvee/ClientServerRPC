@@ -3,7 +3,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 public class SyncRPCClient {
 	private final String serverHost;
@@ -80,21 +84,43 @@ public class SyncRPCClient {
 
 	// Testing
 	public static void main(String[] args) {
+		int numberOfLoops = 1, iterations = 1000000000;
+		if (args.length != 0) {
+			numberOfLoops = Integer.parseInt(args[0]);
+			iterations = Integer.parseInt(args[1]);
+		}
 		String serverHost = Constants.IP.CLIENT_IP;
 		int serverPort = Constants.Ports.RPC_PORT;
-
+		List<Long> durations = new ArrayList<>();
 		SyncRPCClient client = new SyncRPCClient(serverHost, serverPort);
-		try {
-			// Example calls
-			client.handleFoo(1000000000);
-			int sum = client.handleAdd(3332, 53434);
-			System.out.println("[Client Main] Sum from server: " + sum);
 
-			int[] arr = {5, 9, 1, 3, 2};
-			int[] sorted = client.handleSort(arr);
-			System.out.println("[Client Main] Sorted array from server: " + Arrays.toString(sorted));
-		} catch (IOException e) {
-			e.printStackTrace();
+		long startTimeAll = System.currentTimeMillis();
+		for (int i = 0; i < numberOfLoops; i++) {
+			try {
+				// Example calls
+				long startTime = System.currentTimeMillis();
+				client.handleFoo(iterations);
+				int a = (int) (Math.random() * 100000);
+				int b = (int) (Math.random() * 10000000);
+				int sum = client.handleAdd(a, b);
+				System.out.println("[Client Main] Sum from server: " + sum);
+				int[] arr = IntStream.generate(() -> new Random().nextInt(100) + 500).limit(200).toArray();
+				int[] sorted = client.handleSort(arr);
+				long endTime = System.currentTimeMillis();
+				durations.add(endTime - startTime);
+				System.out.println("[Client Main] Sorted array from server: " + Arrays.toString(sorted));
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		long endTimeAll = System.currentTimeMillis();
+		long totalTime = endTimeAll - startTimeAll;
+
+		System.out.println("[Client Main] Completed " + numberOfLoops + " calls to all operations");
+		System.out.println("[Client Main] Total time = " + totalTime + " ms");
+		for (int i = 0; i < durations.size(); i++) {
+			System.out.println("  Call " + (i + 1) + " took " + durations.get(i) + " ms");
 		}
 	}
 }
