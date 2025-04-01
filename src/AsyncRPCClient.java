@@ -4,7 +4,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -142,8 +141,8 @@ public class AsyncRPCClient {
 		long pollEnd = System.currentTimeMillis();
 		long totalTime = pollEnd - pollStart; // from first send to last result
 
-		System.out.println("[AsyncClientPerf] All " + numberOfCalls + " calls finished. Total time = "
-				+ totalTime + " ms");
+		System.out.println("[AsyncClient] All " + numberOfCalls + " calls finished. " +
+				"Total time = " + totalTime + " ms");
 	}
 }
 
